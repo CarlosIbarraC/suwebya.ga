@@ -80,7 +80,12 @@ sup {
 .fade.in {
   display: block;
   opacity: 1; }
-
+.morris{
+  width:auto;
+}
+.morris-hover{
+  background-color:#2a2b3c !important ;
+}
 @media (max-width: 767px) {
   .pull-none-sm {
     float: none !important; } }

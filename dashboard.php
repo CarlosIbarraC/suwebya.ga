@@ -28,9 +28,17 @@
 	<link rel="stylesheet" href="assets/styles/app.css" type="text/css" />
 	<!-- endbuild -->
 	<link rel="stylesheet" href="assets/styles/font.css" type="text/css" />
+	<!-- ----------------graficas morris--------------- -->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+	
 </head>
 <?php 
 require_once 'menu.php' ;
+require_once 'conexion.php';
+$result = $conn->query("SELECT * FROM `datos_maq`  ORDER BY `datos_id` DESC LIMIT 10");
+$revoluciones = $result->fetch_all(MYSQLI_ASSOC);
+ 
+
 ?>
 
 <body>
@@ -112,22 +120,40 @@ require_once 'menu.php' ;
 								<h3>Actividad</h3>
 								<small>Actividad en las ultimas 8 horas vs dia anterior</small>
 							</div>
+							<?php 
+							$r=0;
+							$dat= array();
+							foreach($revoluciones as $datos){
+						$datosRPM = explode(",", $datos['datos_values']);	
+						$RPM1= floatval($datosRPM[0])."<br>";
+						$RPM2= floatval($datosRPM[1])."<br>";
+						$RPM3= floatval(($datosRPM[2])/4)."<br>";							
+						array_push($dat,$RPM1,$RPM2,$RPM3);						
+						//$revoluciones = implode(",",$dat);
+							
+						
+						}?> 
 							<div class="box-body">
 								<div ui-jp="plot" ui-refresh="app.setting.color" ui-options="
 			              [
 			                { 
-			                  data: [[1, 6.1], [2, 6.3], [3, 6.4], [4, 6.6], [5, 7.0], [6, 7.7], [7, 8.3]], 
+			                  data: [[1, '<?php echo floatval($dat[0])?>'], [2, '<?php echo floatval($dat[3])?>'], [3, '<?php echo floatval($dat[6])?>'], [4, '<?php echo floatval($dat[9])?>'], [5, '<?php echo floatval($dat[12])?>'], [6, '<?php echo floatval($dat[15])?>'], [7, '<?php echo floatval($dat[18])?>']], 
 			                  points: { show: true, radius: 0}, 
 			                  splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0 } 
 			                },
 			                { 
-			                  data: [[1, 5.5], [2, 5.7], [3, 6.4], [4, 7.0], [5, 7.2], [6, 7.3], [7, 7.5]], 
+			                  data: [[1,'<?php echo floatval($dat[1])?>'], [2, '<?php echo floatval($dat[4])?>'], [3, '<?php echo floatval($dat[7])?>'], [4, '<?php echo floatval($dat[10])?>'], [5, '<?php echo floatval($dat[13])?>'], [6, '<?php echo floatval($dat[16])?>'], [7, '<?php echo floatval($dat[19])?>']], 
+			                  points: { show: true, radius: 0}, 
+			                  splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0 } 
+			                },
+							{ 
+			                  data: [[1, '<?php echo floatval($dat[2])?>'], [2, '<?php echo floatval($dat[5])?>'], [3, '<?php echo floatval($dat[8])?>'], [4, '<?php echo floatval($dat[11])?>'], [5, '<?php echo floatval($dat[14])?>'], [6, '<?php echo floatval($dat[17])?>'], [7, '<?php echo floatval($dat[20])?>']], 
 			                  points: { show: true, radius: 0}, 
 			                  splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0 } 
 			                }
 			              ], 
 			              {
-			                colors: ['#0cc2aa','#fcc100'],
+			                colors: ['#0cc2aa','#fcc100','#a88add'],
 			                series: { shadowSize: 3 },
 			                xaxis: { show: true, font: { color: '#ccc' }, position: 'bottom' },
 			                yaxis:{ show: true, font: { color: '#ccc' }},
@@ -309,7 +335,7 @@ require_once 'menu.php' ;
 										<i class="material-icons md-18">&#xe5d4;</i>
 									</a>
 									<div class="dropdown-menu dropdown-menu-scale pull-right">
-										<a class="dropdown-item" href>This week</a>
+										<a class="dropdown-item" id="semana" href>This week</a>
 										<a class="dropdown-item" href>This month</a>
 										<a class="dropdown-item" href>This week</a>
 										<div class="dropdown-divider"></div>
@@ -318,25 +344,43 @@ require_once 'menu.php' ;
 								</li>
 							</ul>
 						</div>
-						<div class="box-body">
-							<div ui-jp="plot" ui-refresh="app.setting.color" ui-options="
-	              [
-	                { data: [[1, 2], [2, 4], [3, 5], [4, 7], [5, 6], [6, 4], [7, 5], [8, 4]] },
-	                { data: [[1, 2], [2, 3], [3, 2], [4, 5], [5, 4], [6, 3], [7, 4], [8, 2]] }
-	              ], 
-	              {
-	                bars: { show: true, fill: true,  barWidth: 0.3, lineWidth: 2, order: 1, fillColor: { colors: [{ opacity: 0.2 }, { opacity: 0.2}] }, align: 'center'},
-	                colors: ['#0cc2aa','#fcc100'],
-	                series: { shadowSize: 3 },
-	                xaxis: { show: true, font: { color: '#ccc' }, position: 'bottom' },
-	                yaxis:{ show: true, font: { color: '#ccc' }},
-	                grid: { hoverable: true, clickable: true, borderWidth: 0, color: 'rgba(120,120,120,0.5)' },
-	                tooltip: true,
-	                tooltipOpts: { content: '%x.0 is %y.4',  defaultTheme: false, shifts: { x: 0, y: -40 } }
-	              }
-	            " style="height:200px">
-							</div>
+						
+						<div class="box-body" id="Velocidades" class="morris" style="height: 232px;width:auto;" ></div>					
+						
+					</div>
+				</div>
+				<div class="col-md-12 col-xl-12">
+					<div class="box">
+						<div class="box-header">
+							<h3>Rendimiento</h3>
+							<small>Escala ultimos 7 dias</small>
 						</div>
+						<div class="box-tool">
+							<ul class="nav">
+								<li class="nav-item inline">
+									<a class="nav-link">
+										<i class="material-icons md-18">&#xe863;</i>
+									</a>
+								</li>
+								<li class="nav-item inline dropdown">
+									<a class="nav-link" data-toggle="dropdown">
+										<i class="material-icons md-18">&#xe5d4;</i>
+									</a>
+									<div class="dropdown-menu dropdown-menu-scale pull-right">
+										<a class="dropdown-item" id="semana" href>This week</a>
+										<a class="dropdown-item" href>This month</a>
+										<a class="dropdown-item" href>This week</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item">Today</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+						
+						<div class="box-body" >
+						<canvas id="myChart" style="height: 200px;width:auto;"></canvas>
+						</div>					
+						
 					</div>
 				</div>
 			</div>
@@ -362,10 +406,10 @@ require_once 'menu.php' ;
 	<!-- core -->
 	<script src="libs/jquery/underscore/underscore-min.js"></script>
 	<script src="libs/jquery/jQuery-Storage-API/jquery.storageapi.min.js"></script>
-	<script src="libs/jquery/PACE/pace.min.js"></script>
-
+	<script src="libs/jquery/PACE/pace.min.js"></script>	 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 	<script src="scripts/config.lazyload.js"></script>
-
 	<script src="scripts/palette.js"></script>
 	<script src="scripts/ui-load.js"></script>
 	<script src="scripts/ui-jp.js"></script>
@@ -376,18 +420,24 @@ require_once 'menu.php' ;
 	<script src="scripts/ui-screenfull.js"></script>
 	<script src="scripts/ui-scroll-to.js"></script>
 	<script src="scripts/ui-toggle-class.js"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 	<script src="scripts/app.js"></script>
-
 	<!-- ajax -->
 	<script src="../libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 	<script src="scripts/ajax.js"></script>
-	
-
-
-
-
 	<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+	<script src="js/chart.js"></script>
+
+	<script>
+	var dataGraficoArea="[{ data: [[1, 3], [2, 2.6], [3, 3.2], [4, 3], [5, 3.5], [6, 3], [7, 3.5]], 	                  points: { show: true, radius: 0}, 	 splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0.2 }   }, { data: [[1, 3.6], [2, 3.5], [3, 6], [4, 4], [5, 4.3], [6, 3.5], [7, 3.6]], 	                  points: { show: true, radius: 0},                   	  splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0.1 }    } ], {  colors: ['#fcc100','#0cc2aa'],  series: { shadowSize: 3 },  xaxis: { show: true, font: { color: '#ccc' }, position: 'bottom' },               yaxis:{ show: true, font: { color: '#ccc' },  min: 2},	                grid: { hoverable: true, clickable: true, borderWidth: 0, color: 'rgba(120,120,120,0.5)' },	                tooltip: true,	                tooltipOpts: { content: '%x.0 is %y.4',  defaultTheme: false, shifts: { x: 0, y: -40 } }  } ";
+	console.log(dataGraficoArea);
+
+	function data(){
+
+		return dataGraficoArea;
+	}
+	
+	</script>
 
 
  <script>
@@ -406,14 +456,9 @@ require_once 'menu.php' ;
           $("#kls").html(kls);
 		  $("#temp").html(temp);
 		  $("#estado").html(estado);
-        }
-
-        
-       /*  function update_valuesR(msgr) {
-          $("#display_rev1").html(msgr);
-          $("#display_rev2").html(msgr);
-          return msgr;
-        } */
+		  
+		}     
+       
         
         function process_msg(topic, message) {
           // ej: "10,11,12"
@@ -438,7 +483,10 @@ require_once 'menu.php' ;
 			if(rpm>0){
 				estado="ON"
 			}
-            update_values(rpm, kls, temp,estado);
+			
+			update_values(rpm, kls, temp,estado);
+			
+			intervalo(rpm,kls,temp);
             
           }
           if (topic == "fabrica") {
@@ -454,25 +502,7 @@ require_once 'menu.php' ;
            
 		  } */
 		   /* ----------------grafica----------------------------- */
-		   var datos = {
-            labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
-            datasets: [{
-                label: "datos 1",
-                backgroundColor: "rgba(220,220,220,0.5)",
-                data: [4, 12, 9, 7, 5]
-              },
-              {
-                label: "datos 2",
-                backgroundColor: "rgba(151,187,205,0.5)",
-                data: [10, 7, -5, 6, 5]
-              },
-              {
-                label: "datos 3",
-                backgroundColor: "rgba(151,100,205,0.5)",
-                data: [9, 6, 15, 6, 17]
-              }
-            ]
-          };
+		   var datosG = 0;
 
           /* ----------------grafica----------------------------- */
         }
@@ -524,6 +554,86 @@ client.on('message', (topic, message) => {
 
 
  </script>
+ <script>
+  //Cuando la página esté cargada completamente
+  $(document).ready(function(){
+    //Cada 10 segundos (10000 milisegundos) se ejecutará la función refrescar
+    setTimeout(refrescar, 600000);
+  });
+  function refrescar(){
+    //Actualiza la página
+    location.reload();
+  }
+</script>
+
+<script>
+// grafico de actualizacion dinamico----------------------------------
+
+var Morris4 =new Morris.Line({
+  // ID of the element in which to draw the chart.
+  element: 'Velocidades',  
+  
+  // The name of the data record attribute that contains x-values.
+  xkey: ['hours'],
+  xlabel:['hours'],
+  // A list of names of data record attributes that contain y-values.
+  ykeys: ['valueA','valueB','valueC'],
+  // Labels for the ykeys -- will be displayed when you hover over the
+  // chart.
+  labels: ['Maq 1','Maq 2','Maq 3'],
+  lineWidth:[2],
+  pointSize:[1],
+  lineColors:["#0cc2aa","#6887ff","#a583d6"],
+  hideHover: [true],
+  ymax:[40],
+  parseTime:[false] 
+  
+});
+const numbers=[];
+// funcion para integrar datos a la grafica.
+function intervalo(rpm,kls,temp){
+	if(isNaN(rpm) ){		
+		rpm=10;	
+	}
+	if(isNaN(kls) ){		
+		kls=20;		
+	}
+	if(isNaN(temp) ){		
+		temp=15;		
+	}
+	rpm=parseFloat(rpm);
+	kls=parseFloat(kls);
+	temp=parseInt(temp/3);
+	numbers.unshift(rpm,kls,temp);
+	if (numbers.length > 15) {
+    numbers.length = 15;
+	}
 	
+	var tiempo= new Date();
+	var segundo = tiempo.getSeconds();
+	
+	
+
+	var nuevaData=[ 
+	{ hours:'11', valueA: numbers[14],valueB:numbers[13] ,valueC: numbers[12] },
+	{ hours:'12', valueA: numbers[11],valueB:numbers[10],valueC: numbers[9] },
+	{ hours:'13',  valueA: numbers[8],valueB: numbers[7],valueC: numbers[6] },
+	{ hours:'14', valueA:numbers[5],valueB:numbers[4],valueC:numbers[3] },
+	{ hours:'15', valueA:numbers[2],valueB:numbers[1],valueC: numbers[0] }]
+
+	Morris4.setData(nuevaData);
+
+};
+
+setTimeout(() => {
+	
+	intervalo();
+	
+	
+}, 2000);
+
+</script>	
+
+
 </body>
 </html>

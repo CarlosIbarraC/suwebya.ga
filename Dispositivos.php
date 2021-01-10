@@ -133,7 +133,7 @@ $maq= $conn->query("SELECT * FROM `Maquinaria`");
                         </button></td>
                                         </tr>
                                         <?php } ?>
-                                    </tbody>
+                                    </tbody>  
                                 </table>
                             </div>
                         </div>

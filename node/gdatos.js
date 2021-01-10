@@ -1,11 +1,10 @@
-var mysql = require('mysql');
-var mqtt= require('mqtt');
-var con = mysql.createConnection({
+import { createConnection } from 'mysql';
+import { connect } from 'mqtt';
+var con = createConnection({
     host:"suwebya.tk",
     user:"admin_ceiba",
     password:"121212",
-    database:"admin_suwebya",
-    port: 3306
+    database:"admin_suwebya"
 
 })
 var options = {
@@ -22,7 +21,7 @@ var options = {
     encoding: 'utf8'
   };
 
-  var client = mqtt.connect("mqtt://suwebya.tk", options);
+  var client = connect("mqtt://suwebya.tk", options);
 
   //SE REALIZA LA CONEXION
   client.on('connect', function () {

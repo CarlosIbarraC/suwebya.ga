@@ -1,7 +1,7 @@
 import { createConnection } from 'mysql';
 import { connect } from 'mqtt';
 var con = createConnection({
-    host:"suwebya.tk",
+    host:"suwebya.ga",
     user:"admin_ceiba",
     password:"121212",
     database:"admin_suwebya"
@@ -9,7 +9,7 @@ var con = createConnection({
 })
 var options = {
     port: 1883,
-    host: 'suwebya.tk',
+    host: 'suwebya.ga',
     clientId: 'acces_control_server_' + Math.round(Math.random() * (0- 10000) * -1) ,
     username: 'web_client',
     password: '121212',
@@ -21,7 +21,7 @@ var options = {
     encoding: 'utf8'
   };
 
-  var client = connect("mqtt://suwebya.tk", options);
+  var client = connect("mqtt://suwebya.ga", options);
 
   //SE REALIZA LA CONEXION
   client.on('connect', function () {

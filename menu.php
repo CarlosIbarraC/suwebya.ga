@@ -4,7 +4,7 @@ $logged= $_SESSION['logged'];
 
 if(!$logged){
   echo "Ingreso no autorizado";
-  header("location:https://suwebya.tk/signin.php");
+  header("location:https://suwebya.ga/signin.php");
   die();
 }
 

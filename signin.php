@@ -1,5 +1,4 @@
 <?php
-session_save_path('/home/suwebya.tk/session');
 session_start();
 
 $_SESSION['logged'] = false;
@@ -151,12 +150,13 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
   <script src="libs/jquery/jquery-pjax/jquery.pjax.js"></script>
   <script src="scripts/ajax.js"></script>
  <!-- conexion mqtt -->
- <script src="https://unpkg.com/mqtt@4.1.0/dist/mqtt.min.js"></script>
+ <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <script>
+  
   const options = {
     connectTimeout:4000,
     //autenticacion
-    clientId: 'emqx235',
+    clientId: 'emqx235gdf4',
     username:'web_client',
     password:'121212',
 
@@ -164,14 +164,14 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
     clean:true,
   }
    //websocket 
-  const WebSocket_URL = 'wss://suwebya.tk:8094/mqtt'
+  const WebSocket_URL = 'wss://suwebya.ga:8094/mqtt'
 
   const client = mqtt.connect(WebSocket_URL, options)
 
   client.on ('connect', () => {
     console.log('Conectado con exito por WS! Exito');
 
-    client.suscribe('comands',{qos:0},{error}=>{
+   /*  client.suscribe('comands',{qos:0},{error}=>{
       if (!error) {
         console.log('Subcripcion exitosa');
       }else{
@@ -182,7 +182,7 @@ if(isset($_POST['email']) && isset($_POST['password'])) {
      clent.publish('fabrica','esto es un verdadero exito',(error)=>{
        console.log(error||'Mensaje enviado!!!');
      })
-
+ */
 
 
   })

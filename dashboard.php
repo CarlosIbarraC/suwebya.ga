@@ -426,7 +426,7 @@ $revoluciones = $result->fetch_all(MYSQLI_ASSOC);
 	<script src="../libs/jquery/jquery-pjax/jquery.pjax.js"></script>
 	<script src="scripts/ajax.js"></script>
 	<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-	<script src="js/chart.js"></script>
+	
 
 	<script>
 	var dataGraficoArea="[{ data: [[1, 3], [2, 2.6], [3, 3.2], [4, 3], [5, 3.5], [6, 3], [7, 3.5]], 	                  points: { show: true, radius: 0}, 	 splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0.2 }   }, { data: [[1, 3.6], [2, 3.5], [3, 6], [4, 4], [5, 4.3], [6, 3.5], [7, 3.6]], 	                  points: { show: true, radius: 0},                   	  splines: { show: true, tension: 0.45, lineWidth: 2, fill: 0.1 }    } ], {  colors: ['#fcc100','#0cc2aa'],  series: { shadowSize: 3 },  xaxis: { show: true, font: { color: '#ccc' }, position: 'bottom' },               yaxis:{ show: true, font: { color: '#ccc' },  min: 2},	                grid: { hoverable: true, clickable: true, borderWidth: 0, color: 'rgba(120,120,120,0.5)' },	                tooltip: true,	                tooltipOpts: { content: '%x.0 is %y.4',  defaultTheme: false, shifts: { x: 0, y: -40 } }  } ";
@@ -487,6 +487,7 @@ $revoluciones = $result->fetch_all(MYSQLI_ASSOC);
 			update_values(rpm, kls, temp,estado);
 			
 			intervalo(rpm,kls,temp);
+			intervaloChart(rpm);
             
           }
           if (topic == "fabrica") {
@@ -507,6 +508,8 @@ $revoluciones = $result->fetch_all(MYSQLI_ASSOC);
           /* ----------------grafica----------------------------- */
         }
 
+///----
+///--
 
 	 /*******************************************
 ********    conexion    ********************
@@ -521,7 +524,7 @@ $revoluciones = $result->fetch_all(MYSQLI_ASSOC);
     password: '121212',
     keepalive:60,
 }
-const connectUrl = 'wss://suwebya.tk:8094/mqtt'
+const connectUrl = 'wss://suwebya.ga:8094/mqtt'
 const client = mqtt.connect(connectUrl, options)
 
 client.on('connect', () => {
@@ -558,7 +561,7 @@ client.on('message', (topic, message) => {
   //Cuando la página esté cargada completamente
   $(document).ready(function(){
     //Cada 10 segundos (10000 milisegundos) se ejecutará la función refrescar
-    setTimeout(refrescar, 600000);
+    setTimeout(refrescar, 3600000);
   });
   function refrescar(){
     //Actualiza la página
@@ -590,6 +593,7 @@ var Morris4 =new Morris.Line({
   
 });
 const numbers=[];
+const chartDato=[];
 // funcion para integrar datos a la grafica.
 function intervalo(rpm,kls,temp){
 	if(isNaN(rpm) ){		
@@ -605,6 +609,7 @@ function intervalo(rpm,kls,temp){
 	kls=parseFloat(kls);
 	temp=parseInt(temp/3);
 	numbers.unshift(rpm,kls,temp);
+	
 	if (numbers.length > 15) {
     numbers.length = 15;
 	}
@@ -624,15 +629,16 @@ function intervalo(rpm,kls,temp){
 	Morris4.setData(nuevaData);
 
 };
-
 setTimeout(() => {
-	
+		
 	intervalo();
 	
+		
 	
 }, 2000);
 
-</script>	
+</script>
+<script src="js/chart2.js"></script>
 
 
 </body>
